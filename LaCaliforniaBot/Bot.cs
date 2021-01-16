@@ -8,6 +8,7 @@ using TwitchLib.Communication.Clients;
 using TwitchLib.Communication.Models;
 using Google.Cloud.TextToSpeech.V1;
 using LaCaliforniaBot.Model;
+using System.Threading.Tasks;
 
 namespace LaCaliforniaBot
 {
@@ -17,6 +18,7 @@ namespace LaCaliforniaBot
         private readonly TwitchClient client;
         private readonly TextToSpeechClient ttsClient;
 
+        private bool playing = false;
         private bool ttsEnabled = true;
 
         public Bot(string ttsCredentials, ConfigDTO config)
@@ -77,6 +79,10 @@ namespace LaCaliforniaBot
 
                 if (canUseTTS && message.StartsWith(ttsCommand))
                 {
+                    while (playing)
+                    {
+                        Task.Delay(500);
+                    }
                     var msgToRead = message.Substring(ttsCommand.Length);
                     LogMessage($"{e.ChatMessage.Username}: {msgToRead}");
                     PlayMessage(msgToRead);
@@ -105,8 +111,10 @@ namespace LaCaliforniaBot
             }
         }
 
-        private void PlayMessage(string message)
+        private async void PlayMessage(string message)
         {
+            playing = true;
+
             SynthesisInput input = new SynthesisInput
             {
                 Text = message
@@ -132,7 +140,9 @@ namespace LaCaliforniaBot
                 using (Stream output = new MemoryStream(response.AudioContent.ToByteArray()))
                 {
                     SoundPlayer soundPlayer = new SoundPlayer(output);
-                    soundPlayer.Play();
+                    soundPlayer.PlaySync();
+                    await Task.Delay(500);
+                    playing = false;
                 }
             }
             catch (Exception ex)
