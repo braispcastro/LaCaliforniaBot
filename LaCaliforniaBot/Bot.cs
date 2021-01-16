@@ -36,7 +36,7 @@ namespace LaCaliforniaBot
 
             WebSocketClient customClient = new WebSocketClient(clientOptions);
             client = new TwitchClient(customClient);
-            client.Initialize(credentials, "cheisinilusions");
+            client.Initialize(credentials, config.Channel);
 
             client.OnMessageReceived += Client_OnMessageReceived;
             client.OnConnected += Client_OnConnected;

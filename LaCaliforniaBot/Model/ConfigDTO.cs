@@ -2,6 +2,7 @@
 {
     internal class ConfigDTO
     {
+        public string Channel { get; set; }
         public char Prefix { get; set; }
         public string TextToSpeech { get; set; }
         public string Settings { get; set; }
