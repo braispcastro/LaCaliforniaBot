@@ -90,12 +90,12 @@ namespace LaCaliforniaBot
                 else if (canUseSettings && message.StartsWith(settingsCommand))
                 {
                     var param = message.Substring(settingsCommand.Length);
-                    if (param.ToLowerInvariant() == "focus")
+                    if (param.ToLowerInvariant() == config.DisableTTS)
                     {
                         ttsEnabled = false;
                         LogMessage($"*** TTS desactivado por {e.ChatMessage.Username} ***");
                     }
-                    else if (param.ToLowerInvariant() == "resume")
+                    else if (param.ToLowerInvariant() == config.EnableTTS)
                     {
                         ttsEnabled = true;
                         LogMessage($"*** TTS activado por {e.ChatMessage.Username} ***");
