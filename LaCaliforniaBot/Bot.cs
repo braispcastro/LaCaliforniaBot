@@ -77,7 +77,7 @@ namespace LaCaliforniaBot
                 bool canUseSettings = e.ChatMessage.IsBroadcaster || e.ChatMessage.IsModerator;
                 bool canUseTTS = ttsEnabled && (e.ChatMessage.IsBroadcaster || e.ChatMessage.IsModerator || e.ChatMessage.IsSubscriber || e.ChatMessage.IsVip);
 
-                if (canUseTTS && message.StartsWith(ttsCommand))
+                if (canUseTTS && message.ToLowerInvariant().StartsWith(ttsCommand.ToLowerInvariant()))
                 {
                     while (playing)
                     {
@@ -87,15 +87,15 @@ namespace LaCaliforniaBot
                     LogMessage($"{e.ChatMessage.Username}: {msgToRead}");
                     PlayMessage(msgToRead);
                 }
-                else if (canUseSettings && message.StartsWith(settingsCommand))
+                else if (canUseSettings && message.ToLowerInvariant().StartsWith(settingsCommand.ToLowerInvariant()))
                 {
                     var param = message.Substring(settingsCommand.Length);
-                    if (param.ToLowerInvariant() == config.DisableTTS)
+                    if (ttsEnabled && param.ToLowerInvariant() == config.DisableTTS)
                     {
                         ttsEnabled = false;
                         LogMessage($"*** TTS desactivado por {e.ChatMessage.Username} ***");
                     }
-                    else if (param.ToLowerInvariant() == config.EnableTTS)
+                    else if (!ttsEnabled && param.ToLowerInvariant() == config.EnableTTS)
                     {
                         ttsEnabled = true;
                         LogMessage($"*** TTS activado por {e.ChatMessage.Username} ***");

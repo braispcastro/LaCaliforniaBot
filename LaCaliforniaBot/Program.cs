@@ -10,11 +10,14 @@ namespace LaCaliforniaBot
     {
         static void Main(string[] args)
         {
-            Console.Title = $"LaCaliforniaBot v{Assembly.GetExecutingAssembly().GetName().Version.Major}.{Assembly.GetExecutingAssembly().GetName().Version.Minor}";
-
             var jsonCredentials = File.ReadAllText("credentials.json");
             var json = File.ReadAllText("config.json");
             var config = JsonConvert.DeserializeObject<ConfigDTO>(json);
+
+            Console.Title = $"#{config.Channel} | LaCaliforniaBot " +
+                $"v{Assembly.GetExecutingAssembly().GetName().Version.Major}" +
+                $".{Assembly.GetExecutingAssembly().GetName().Version.Minor}" +
+                $".{Assembly.GetExecutingAssembly().GetName().Version.Build}";
 
             Bot bot = new Bot(jsonCredentials, config);
             bot.Connect();
