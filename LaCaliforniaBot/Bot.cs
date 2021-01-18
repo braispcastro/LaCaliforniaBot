@@ -8,7 +8,8 @@ using TwitchLib.Communication.Clients;
 using TwitchLib.Communication.Models;
 using Google.Cloud.TextToSpeech.V1;
 using LaCaliforniaBot.Model;
-using System.Threading.Tasks;
+using System.Collections.Generic;
+using System.Threading;
 
 namespace LaCaliforniaBot
 {
@@ -20,10 +21,14 @@ namespace LaCaliforniaBot
 
         private bool playing = false;
         private bool ttsEnabled = true;
+        private int messageDelay = 0;
+        private Dictionary<string, DateTime> usersDictionary = new Dictionary<string, DateTime>();
 
         public Bot(string ttsCredentials, ConfigDTO config)
         {
             this.config = config;
+
+            messageDelay = config.MessageDelay;
 
             ttsClient = new TextToSpeechClientBuilder { JsonCredentials = ttsCredentials }.Build();
 
@@ -77,17 +82,17 @@ namespace LaCaliforniaBot
                 bool canUseSettings = e.ChatMessage.IsBroadcaster || e.ChatMessage.IsModerator;
                 bool canUseTTS = ttsEnabled && (e.ChatMessage.IsBroadcaster || e.ChatMessage.IsModerator || e.ChatMessage.IsSubscriber || e.ChatMessage.IsVip);
 
-                if (canUseTTS && message.ToLowerInvariant().StartsWith(ttsCommand.ToLowerInvariant()))
+                if (message.ToLowerInvariant().StartsWith(ttsCommand.ToLowerInvariant()) && canUseTTS && IsAllowedToSpeak(e.ChatMessage.Username))
                 {
                     while (playing)
                     {
-                        Task.Delay(500);
+                        Thread.Sleep(100);
                     }
                     var msgToRead = message.Substring(ttsCommand.Length);
                     LogMessage($"{e.ChatMessage.Username}: {msgToRead}");
                     PlayMessage(msgToRead);
                 }
-                else if (canUseSettings && message.ToLowerInvariant().StartsWith(settingsCommand.ToLowerInvariant()))
+                else if (message.ToLowerInvariant().StartsWith(settingsCommand.ToLowerInvariant()) && canUseSettings)
                 {
                     var param = message.Substring(settingsCommand.Length);
                     if (ttsEnabled && param.ToLowerInvariant() == config.DisableTTS)
@@ -100,6 +105,11 @@ namespace LaCaliforniaBot
                         ttsEnabled = true;
                         LogMessage($"*** TTS activado por {e.ChatMessage.Username} ***");
                     }
+                    else if (int.TryParse(param, out messageDelay))
+                    {
+                        usersDictionary.Clear();
+                        LogMessage($"*** Slow mode de {messageDelay} segundos establecido por {e.ChatMessage.Username} ***");
+                    }
                 }
             }
             catch (Exception ex)
@@ -111,7 +121,31 @@ namespace LaCaliforniaBot
             }
         }
 
-        private async void PlayMessage(string message)
+        private bool IsAllowedToSpeak(string username)
+        {
+            if (messageDelay <= 0)
+                return true;
+
+            if (usersDictionary.TryGetValue(username, out DateTime lastMessage))
+            {
+                if ((DateTime.UtcNow - lastMessage).TotalSeconds >= messageDelay)
+                {
+                    usersDictionary[username] = DateTime.UtcNow;
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                usersDictionary.Add(username, DateTime.UtcNow);
+                return true;
+            }
+        }
+
+        private void PlayMessage(string message)
         {
             playing = true;
 
@@ -141,7 +175,7 @@ namespace LaCaliforniaBot
                 {
                     SoundPlayer soundPlayer = new SoundPlayer(output);
                     soundPlayer.PlaySync();
-                    await Task.Delay(500);
+                    Thread.Sleep(500);
                     playing = false;
                 }
             }

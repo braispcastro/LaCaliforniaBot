@@ -16,8 +16,8 @@ namespace LaCaliforniaBot
 
             Console.Title = $"#{config.Channel} | LaCaliforniaBot " +
                 $"v{Assembly.GetExecutingAssembly().GetName().Version.Major}" +
-                $".{Assembly.GetExecutingAssembly().GetName().Version.Minor}" +
-                $".{Assembly.GetExecutingAssembly().GetName().Version.Build}";
+                $".{Assembly.GetExecutingAssembly().GetName().Version.Minor}";
+                //$".{Assembly.GetExecutingAssembly().GetName().Version.Build}";
 
             Bot bot = new Bot(jsonCredentials, config);
             bot.Connect();
