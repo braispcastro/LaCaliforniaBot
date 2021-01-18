@@ -18,17 +18,18 @@ namespace LaCaliforniaBot
         private readonly ConfigDTO config;
         private readonly TwitchClient client;
         private readonly TextToSpeechClient ttsClient;
+        private readonly Dictionary<string, DateTime> usersDictionary;
 
         private bool playing = false;
         private bool ttsEnabled = true;
         private int messageDelay = 0;
-        private Dictionary<string, DateTime> usersDictionary = new Dictionary<string, DateTime>();
 
         public Bot(string ttsCredentials, ConfigDTO config)
         {
             this.config = config;
 
             messageDelay = config.MessageDelay;
+            usersDictionary = new Dictionary<string, DateTime>();
 
             ttsClient = new TextToSpeechClientBuilder { JsonCredentials = ttsCredentials }.Build();
 
