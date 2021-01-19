@@ -8,6 +8,7 @@
         public string Settings { get; set; }
         public string EnableTTS { get; set; }
         public string DisableTTS { get; set; }
+        public string SlowInfo { get; set; }
         public int MessageDelay { get; set; }
         public bool VerboseLog { get; set; }
         public string BotUsername { get; set; }
