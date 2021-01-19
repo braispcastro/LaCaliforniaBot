@@ -83,7 +83,7 @@ namespace LaCaliforniaBot
                 bool canUseSettings = e.ChatMessage.IsBroadcaster || e.ChatMessage.IsModerator;
                 bool canUseTTS = ttsEnabled && (e.ChatMessage.IsBroadcaster || e.ChatMessage.IsModerator || e.ChatMessage.IsSubscriber || e.ChatMessage.IsVip);
 
-                if (message.ToLowerInvariant().StartsWith(ttsCommand.ToLowerInvariant()) && canUseTTS && IsAllowedToSpeak(e.ChatMessage.Username))
+                if (message.ToLowerInvariant().StartsWith(ttsCommand.ToLowerInvariant()) && canUseTTS && IsAllowedToSpeak(e.ChatMessage))
                 {
                     while (playing)
                     {
@@ -122,16 +122,16 @@ namespace LaCaliforniaBot
             }
         }
 
-        private bool IsAllowedToSpeak(string username)
+        private bool IsAllowedToSpeak(ChatMessage chatMessage)
         {
-            if (messageDelay <= 0)
+            if (messageDelay <= 0 || chatMessage.IsBroadcaster || chatMessage.IsModerator)
                 return true;
 
-            if (usersDictionary.TryGetValue(username, out DateTime lastMessage))
+            if (usersDictionary.TryGetValue(chatMessage.Username, out DateTime lastMessage))
             {
                 if ((DateTime.UtcNow - lastMessage).TotalSeconds >= messageDelay)
                 {
-                    usersDictionary[username] = DateTime.UtcNow;
+                    usersDictionary[chatMessage.Username] = DateTime.UtcNow;
                     return true;
                 }
                 else
@@ -141,7 +141,7 @@ namespace LaCaliforniaBot
             }
             else
             {
-                usersDictionary.Add(username, DateTime.UtcNow);
+                usersDictionary.Add(chatMessage.Username, DateTime.UtcNow);
                 return true;
             }
         }
