@@ -10,6 +10,7 @@
         public string DisableTTS { get; set; }
         public string SlowInfo { get; set; }
         public int MessageDelay { get; set; }
+        public bool LogTTSMessage { get; set; }
         public bool VerboseLog { get; set; }
         public string BotUsername { get; set; }
         public string BotPassword { get; set; }

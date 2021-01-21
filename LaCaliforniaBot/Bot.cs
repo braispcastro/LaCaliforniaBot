@@ -92,17 +92,24 @@ namespace LaCaliforniaBot
 
                 string message = e.ChatMessage.Message.Trim();
                 bool canUseSettings = e.ChatMessage.IsBroadcaster || e.ChatMessage.IsModerator;
-                bool canUseTTS = ttsEnabled && (e.ChatMessage.IsBroadcaster || e.ChatMessage.IsModerator || e.ChatMessage.IsSubscriber || e.ChatMessage.IsVip);
+                bool canUseTTS = canUseSettings || (ttsEnabled && (e.ChatMessage.IsSubscriber || e.ChatMessage.IsVip));
 
-                if (message.ToLowerInvariant().StartsWith(ttsCommand.ToLowerInvariant()) && canUseTTS && IsAllowedToSpeak(e.ChatMessage))
+
+                if (message.ToLowerInvariant().StartsWith(ttsCommand.ToLowerInvariant()) 
+                    && canUseTTS && IsAllowedToSpeak(e.ChatMessage))
                 {
                     CaliforniaCommand(ttsCommand, message, e.ChatMessage.Username);
                 }
-                else if (message.ToLowerInvariant().StartsWith(settingsCommand.ToLowerInvariant()) && canUseSettings)
+
+                else if (message.ToLowerInvariant().StartsWith(settingsCommand.ToLowerInvariant()) 
+                    && canUseSettings)
                 {
                     SettingsCommand(settingsCommand, message, e.ChatMessage.Username);
                 }
-                else if (message.ToLowerInvariant().StartsWith(slowCommand.ToLowerInvariant()) && messageDelay > 0 && CanNotifyCommand(config.SlowInfo))
+
+                else if (!string.IsNullOrEmpty(config.SlowInfo) 
+                    && message.ToLowerInvariant().StartsWith(slowCommand.ToLowerInvariant()) 
+                    && messageDelay > 0 && CanNotifyCommand(config.SlowInfo))
                 {
                     WriteMessage($"No podrás usar la !k de nuevo hasta que pasen {messageDelay} segundos. Los mensajes no se quedan en cola, así que no spamees!");
                 }
@@ -120,10 +127,10 @@ namespace LaCaliforniaBot
         {
             bool result = commandsDictionary.ContainsKey(command) && (!commandsDictionary[command].HasValue
                 || (commandsDictionary[command].HasValue && (DateTime.UtcNow - commandsDictionary[command].Value).TotalSeconds > 30));
+
             if (result)
-            {
                 commandsDictionary[command] = DateTime.UtcNow;
-            }
+
             return result;
         }
 
@@ -134,7 +141,8 @@ namespace LaCaliforniaBot
                 Thread.Sleep(100);
             }
             var msgToRead = message.Substring(ttsCommand.Length);
-            LogMessage($"{username}: {msgToRead}");
+            if (config.LogTTSMessage)
+                LogMessage($"{username}: {msgToRead}");
             PlayMessage(msgToRead);
         }
 
