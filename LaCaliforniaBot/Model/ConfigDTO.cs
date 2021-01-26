@@ -1,4 +1,6 @@
-﻿namespace LaCaliforniaBot.Model
+﻿using System.Collections.Generic;
+
+namespace LaCaliforniaBot.Model
 {
     internal class ConfigDTO
     {
@@ -14,5 +16,6 @@
         public bool VerboseLog { get; set; }
         public string BotUsername { get; set; }
         public string BotPassword { get; set; }
+        public List<string> ExcludedMods { get; set; }
     }
 }

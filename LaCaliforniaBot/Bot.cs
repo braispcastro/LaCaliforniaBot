@@ -10,6 +10,7 @@ using Google.Cloud.TextToSpeech.V1;
 using LaCaliforniaBot.Model;
 using System.Collections.Generic;
 using System.Threading;
+using System.Linq;
 
 namespace LaCaliforniaBot
 {
@@ -64,7 +65,14 @@ namespace LaCaliforniaBot
 
         private void LogMessage(string message)
         {
-            Console.WriteLine($"[{DateTime.Now}] {message}");
+            try
+            {
+                Console.WriteLine($"[{DateTime.Now}] {message}");
+            }
+            catch (Exception)
+            {
+                // Leave empty
+            }
         }
 
         private void WriteMessage(string message)
@@ -168,6 +176,10 @@ namespace LaCaliforniaBot
 
         private bool IsAllowedToSpeak(ChatMessage chatMessage)
         {
+            bool isExcludedMod = config.ExcludedMods.Select(x => x.ToLowerInvariant()).Contains(chatMessage.Username.ToLowerInvariant());
+            if (isExcludedMod && !ttsEnabled)
+                return false;
+
             if (messageDelay <= 0 || chatMessage.IsBroadcaster || chatMessage.IsModerator)
                 return true;
 
