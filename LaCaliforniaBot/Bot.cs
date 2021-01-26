@@ -180,7 +180,7 @@ namespace LaCaliforniaBot
             if (isExcludedMod && !ttsEnabled)
                 return false;
 
-            if (messageDelay <= 0 || chatMessage.IsBroadcaster || chatMessage.IsModerator)
+            if (messageDelay <= 0 || (!isExcludedMod && (chatMessage.IsBroadcaster || chatMessage.IsModerator)))
                 return true;
 
             if (usersDictionary.TryGetValue(chatMessage.Username, out DateTime lastMessage))
