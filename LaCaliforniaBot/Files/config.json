@@ -1,0 +1,15 @@
+﻿{
+  "Channel": "cheisinilusions",
+  "Prefix": "!",
+  "TextToSpeech": "k",
+  "Settings": "tts",
+  "EnableTTS": "on",
+  "DisableTTS": "off",
+  "SlowInfo": "slow",
+  "MessageDelay": 0,
+  "LogTTSMessage": true,
+  "VerboseLog": false,
+  "BotUsername": "LaCaliforniaBot",
+  "BotPassword": "oauth:vhkdcqo8v47366ig6m7kk68m7yq6ee",
+  "ExcludedMods": [ "Streamlabs" ]
+}

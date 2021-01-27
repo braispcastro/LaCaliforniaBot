@@ -7,7 +7,6 @@ using TwitchLib.Client.Models;
 using TwitchLib.Communication.Clients;
 using TwitchLib.Communication.Models;
 using Google.Cloud.TextToSpeech.V1;
-using LaCaliforniaBot.Model;
 using System.Collections.Generic;
 using System.Threading;
 using System.Linq;
@@ -16,7 +15,6 @@ namespace LaCaliforniaBot
 {
     internal class Bot
     {
-        private readonly ConfigDTO config;
         private readonly TwitchClient client;
         private readonly TextToSpeechClient ttsClient;
         private readonly Dictionary<string, DateTime> usersDictionary;
@@ -26,20 +24,18 @@ namespace LaCaliforniaBot
         private bool ttsEnabled = true;
         private int messageDelay = 0;
 
-        public Bot(string ttsCredentials, ConfigDTO config)
+        public Bot(string ttsCredentials)
         {
-            this.config = config;
-
-            messageDelay = config.MessageDelay;
+            messageDelay = Configuration.BasicConfiguration.MessageDelay;
             usersDictionary = new Dictionary<string, DateTime>();
             commandsDictionary = new Dictionary<string, DateTime?>
             {
-                { config.SlowInfo, null }
+                { Configuration.BasicConfiguration.SlowInfo, null }
             };
 
             ttsClient = new TextToSpeechClientBuilder { JsonCredentials = ttsCredentials }.Build();
 
-            ConnectionCredentials credentials = new ConnectionCredentials(config.BotUsername, config.BotPassword);
+            ConnectionCredentials credentials = new ConnectionCredentials(Configuration.BasicConfiguration.BotUsername, Configuration.BasicConfiguration.BotPassword);
             var clientOptions = new ClientOptions
             {
                 MessagesAllowedInPeriod = 750,
@@ -48,12 +44,12 @@ namespace LaCaliforniaBot
 
             WebSocketClient customClient = new WebSocketClient(clientOptions);
             client = new TwitchClient(customClient);
-            client.Initialize(credentials, config.Channel);
+            client.Initialize(credentials, Configuration.BasicConfiguration.Channel);
 
             client.OnMessageReceived += Client_OnMessageReceived;
             client.OnConnected += Client_OnConnected;
 
-            if (config.VerboseLog)
+            if (Configuration.BasicConfiguration.VerboseLog)
                 client.OnLog += Client_OnLog;
         }
 
@@ -77,7 +73,7 @@ namespace LaCaliforniaBot
 
         private void WriteMessage(string message)
         {
-            client.SendMessage(config.Channel, $"/me {message}");
+            client.SendMessage(Configuration.BasicConfiguration.Channel, $"/me {message}");
         }
 
         private void Client_OnLog(object sender, OnLogArgs e)
@@ -94,9 +90,9 @@ namespace LaCaliforniaBot
         {
             try
             {
-                var ttsCommand = $"{config.Prefix}{config.TextToSpeech} ";
-                var settingsCommand = $"{config.Prefix}{config.Settings} ";
-                var slowCommand = $"{config.Prefix}{config.SlowInfo}";
+                var ttsCommand = $"{Configuration.BasicConfiguration.Prefix}{Configuration.BasicConfiguration.TextToSpeech} ";
+                var settingsCommand = $"{Configuration.BasicConfiguration.Prefix}{Configuration.BasicConfiguration.Settings} ";
+                var slowCommand = $"{Configuration.BasicConfiguration.Prefix}{Configuration.BasicConfiguration.SlowInfo}";
 
                 string message = e.ChatMessage.Message.Trim();
                 bool canUseSettings = e.ChatMessage.IsBroadcaster || e.ChatMessage.IsModerator;
@@ -115,16 +111,16 @@ namespace LaCaliforniaBot
                     SettingsCommand(settingsCommand, message, e.ChatMessage.Username);
                 }
 
-                else if (!string.IsNullOrEmpty(config.SlowInfo) 
+                else if (!string.IsNullOrEmpty(Configuration.BasicConfiguration.SlowInfo) 
                     && message.ToLowerInvariant().StartsWith(slowCommand.ToLowerInvariant()) 
-                    && messageDelay > 0 && CanNotifyCommand(config.SlowInfo))
+                    && messageDelay > 0 && CanNotifyCommand(Configuration.BasicConfiguration.SlowInfo))
                 {
                     WriteMessage($"No podrás usar la !k de nuevo hasta que pasen {messageDelay} segundos. Los mensajes no se quedan en cola, así que no spamees!");
                 }
             }
             catch (Exception ex)
             {
-                if (config.VerboseLog)
+                if (Configuration.BasicConfiguration.VerboseLog)
                     LogMessage($"{ex.Message}\n{ex.StackTrace}");
                 else
                     LogMessage(ex.Message);
@@ -149,7 +145,7 @@ namespace LaCaliforniaBot
                 Thread.Sleep(100);
             }
             var msgToRead = message.Substring(ttsCommand.Length);
-            if (config.LogTTSMessage)
+            if (Configuration.BasicConfiguration.LogTTSMessage)
                 LogMessage($"{username}: {msgToRead}");
             PlayMessage(msgToRead);
         }
@@ -157,12 +153,12 @@ namespace LaCaliforniaBot
         private void SettingsCommand(string settingsCommand, string message, string username)
         {
             var param = message.Substring(settingsCommand.Length);
-            if (ttsEnabled && param.ToLowerInvariant() == config.DisableTTS)
+            if (ttsEnabled && param.ToLowerInvariant() == Configuration.BasicConfiguration.DisableTTS)
             {
                 ttsEnabled = false;
                 LogMessage($"*** TTS desactivado por {username} ***");
             }
-            else if (!ttsEnabled && param.ToLowerInvariant() == config.EnableTTS)
+            else if (!ttsEnabled && param.ToLowerInvariant() == Configuration.BasicConfiguration.EnableTTS)
             {
                 ttsEnabled = true;
                 LogMessage($"*** TTS activado por {username} ***");
@@ -176,7 +172,7 @@ namespace LaCaliforniaBot
 
         private bool IsAllowedToSpeak(ChatMessage chatMessage)
         {
-            bool isExcludedMod = config.ExcludedMods.Select(x => x.ToLowerInvariant()).Contains(chatMessage.Username.ToLowerInvariant());
+            bool isExcludedMod = Configuration.BasicConfiguration.ExcludedMods.Select(x => x.ToLowerInvariant()).Contains(chatMessage.Username.ToLowerInvariant());
             if (isExcludedMod && !ttsEnabled)
                 return false;
 
@@ -238,7 +234,7 @@ namespace LaCaliforniaBot
             }
             catch (Exception ex)
             {
-                if (config.VerboseLog)
+                if (Configuration.BasicConfiguration.VerboseLog)
                     LogMessage($"{ex.Message}\n{ex.StackTrace}");
                 else
                     LogMessage(ex.Message);

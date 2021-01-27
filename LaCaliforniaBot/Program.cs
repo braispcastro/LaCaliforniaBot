@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Reflection;
+using LaCaliforniaBot.Commands;
 using LaCaliforniaBot.Model;
 using Newtonsoft.Json;
 
@@ -10,18 +11,21 @@ namespace LaCaliforniaBot
     {
         static void Main(string[] args)
         {
-            var jsonCredentials = File.ReadAllText("credentials.json");
-            var json = File.ReadAllText("config.json");
-            var config = JsonConvert.DeserializeObject<ConfigDTO>(json);
+            // Configuration
+            var json = File.ReadAllText("files/config.json");
+            Configuration.BasicConfiguration = JsonConvert.DeserializeObject<ConfigDTO>(json);
 
-            Console.Title = $"#{config.Channel} | LaCaliforniaBot " +
+            // Windows title
+            Console.Title = $"#{Configuration.BasicConfiguration.Channel} | LaCaliforniaBot " +
                 $"v{Assembly.GetExecutingAssembly().GetName().Version.Major}" +
                 $".{Assembly.GetExecutingAssembly().GetName().Version.Minor}";
-                //$".{Assembly.GetExecutingAssembly().GetName().Version.Build}";
 
-            Bot bot = new Bot(jsonCredentials, config);
-            bot.Connect();
+            // Connect twitch bot
+            //TwitchBot.Instance.Connect();
 
+            var cb = new CommandBuilder();
+
+            // Hold till exit
             string param = string.Empty;
             while (param.ToLowerInvariant() != "exit")
                 param = Console.ReadLine();

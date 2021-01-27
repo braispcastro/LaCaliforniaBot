@@ -2,7 +2,7 @@
 
 namespace LaCaliforniaBot.Model
 {
-    internal class ConfigDTO
+    public class ConfigDTO
     {
         public string Channel { get; set; }
         public char Prefix { get; set; }
