@@ -16,13 +16,4 @@
     <PackageReference Include="TwitchLib.Client" Version="3.1.5" />
   </ItemGroup>
 
-  <ItemGroup>
-    <None Update="Files\config.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Files\credentials.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-
 </Project>
