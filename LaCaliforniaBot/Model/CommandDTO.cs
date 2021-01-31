@@ -1,5 +1,4 @@
 ﻿using LaCaliforniaBot.Enums;
-using System.Collections.Generic;
 using System.Reflection;
 
 namespace LaCaliforniaBot.Model
@@ -11,14 +10,16 @@ namespace LaCaliforniaBot.Model
         public string Description { get; }
         public ChatUserType Allow { get; }
         public MethodInfo MethodInfo { get; }
+        public object? Instance { get; }
 
-        public CommandDTO(string alias, string name, string description, ChatUserType allow, MethodInfo methodInfo)
+        public CommandDTO(string alias, string name, string description, ChatUserType allow, MethodInfo methodInfo, object instance)
         {
             Alias = alias;
             Name = name;
             Description = description;
             Allow = allow;
             MethodInfo = methodInfo;
+            Instance = instance;
         }
     }
 }

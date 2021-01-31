@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using System.Reflection;
-using LaCaliforniaBot.Commands;
 using LaCaliforniaBot.Model;
 using Newtonsoft.Json;
 
@@ -21,9 +20,7 @@ namespace LaCaliforniaBot
                 $".{Assembly.GetExecutingAssembly().GetName().Version.Minor}";
 
             // Connect twitch bot
-            //TwitchBot.Instance.Connect();
-
-            var cb = new CommandBuilder();
+            TwitchBot.Instance.Connect();
 
             // Hold till exit
             string param = string.Empty;
