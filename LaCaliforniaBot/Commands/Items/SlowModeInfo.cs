@@ -1,6 +1,6 @@
-﻿using LaCaliforniaBot.Commands.Attributes;
+﻿using System;
+using LaCaliforniaBot.Commands.Attributes;
 using LaCaliforniaBot.Enums;
-using System;
 
 namespace LaCaliforniaBot.Commands.Items
 {
@@ -17,18 +17,25 @@ namespace LaCaliforniaBot.Commands.Items
         [Command("slowinfo", ChatUserType.Pleb)]
         public void ToggleTextToSpeech(object[] args)
         {
-            if (CanUseCommand())
+            try
             {
-                if (!Configuration.TextToSpeechEnabled)
+                if (CanUseCommand())
                 {
-                    lastUsed = DateTime.UtcNow;
-                    TwitchBot.Instance.SendMessage($"La !k está desactivada y solo puede ser usada por los mods");
+                    if (!Configuration.TextToSpeechEnabled)
+                    {
+                        lastUsed = DateTime.UtcNow;
+                        TwitchBot.Instance.SendMessage($"La !k está desactivada y solo puede ser usada por los mods");
+                    }
+                    else if (Configuration.TextToSpeechDelay > 0)
+                    {
+                        lastUsed = DateTime.UtcNow;
+                        TwitchBot.Instance.SendMessage($"No podrás usar la !k de nuevo hasta que pasen {Configuration.TextToSpeechDelay} segundos. Los mensajes no se quedan en cola, así que no spamees!");
+                    }
                 }
-                else if (Configuration.TextToSpeechDelay > 0)
-                {
-                    lastUsed = DateTime.UtcNow;
-                    TwitchBot.Instance.SendMessage($"No podrás usar la !k de nuevo hasta que pasen {Configuration.TextToSpeechDelay} segundos. Los mensajes no se quedan en cola, así que no spamees!");
-                }
+            }
+            catch (Exception ex)
+            {
+                TwitchBot.Instance.LogMessage(ex.Message);
             }
         }
 

@@ -1,4 +1,5 @@
-﻿using LaCaliforniaBot.Commands.Attributes;
+﻿using System;
+using LaCaliforniaBot.Commands.Attributes;
 using LaCaliforniaBot.Enums;
 
 namespace LaCaliforniaBot.Commands.Items
@@ -14,20 +15,27 @@ namespace LaCaliforniaBot.Commands.Items
         [Command("tts", ChatUserType.Broadcaster | ChatUserType.Moderator)]
         public void ToggleTextToSpeech(object[] args)
         {
-            var chatCommand = ParseArgument(args);
-            var arg = GetFirstParameter(chatCommand.ArgumentsAsList);
-            if (string.IsNullOrEmpty(arg))
-                return;
+            try
+            {
+                var chatCommand = ParseArgument(args);
+                var arg = GetFirstParameter(chatCommand.ArgumentsAsList);
+                if (string.IsNullOrEmpty(arg))
+                    return;
 
 
-            if (int.TryParse(arg, out int delay))
-                ChangeTextToSpeechDelay(chatCommand.ChatMessage.Username, delay);
+                if (int.TryParse(arg, out int delay))
+                    ChangeTextToSpeechDelay(chatCommand.ChatMessage.Username, delay);
 
-            else if (arg.ToLowerInvariant() == "on" && !Configuration.TextToSpeechEnabled)
-                EnableTextToSpeech(chatCommand.ChatMessage.Username);
+                else if (arg.ToLowerInvariant() == "on" && !Configuration.TextToSpeechEnabled)
+                    EnableTextToSpeech(chatCommand.ChatMessage.Username);
 
-            else if (arg.ToLowerInvariant() == "off" && Configuration.TextToSpeechEnabled)
-                DisableTextToSpeech(chatCommand.ChatMessage.Username);
+                else if (arg.ToLowerInvariant() == "off" && Configuration.TextToSpeechEnabled)
+                    DisableTextToSpeech(chatCommand.ChatMessage.Username);
+            }
+            catch (Exception ex)
+            {
+                TwitchBot.Instance.LogMessage(ex.Message);
+            }
         }
 
         #region Private Methods
