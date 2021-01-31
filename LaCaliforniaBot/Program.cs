@@ -14,6 +14,8 @@ namespace LaCaliforniaBot
             // Configuration
             var json = File.ReadAllText("files/config.json");
             Configuration.BasicConfiguration = JsonConvert.DeserializeObject<ConfigDTO>(json);
+            Configuration.TextToSpeechEnabled = true;
+            Configuration.TextToSpeechDelay = 0;
 
             // Windows title
             Console.Title = $"#{Configuration.BasicConfiguration.Channel} | LaCaliforniaBot " +
