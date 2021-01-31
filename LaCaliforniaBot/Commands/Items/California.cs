@@ -34,16 +34,16 @@ namespace LaCaliforniaBot.Commands.Items
                     PlayMessage(cmd.ArgumentsAsString);
 
                 // Si el TTS está desactivado o hay delay, me lo salto para el streamer o los mods no excluidos
-                if (cmd.ChatMessage.IsBroadcaster || (cmd.ChatMessage.IsModerator && !IsExcludedMod(cmd.ChatMessage.Username)))
+                else if (cmd.ChatMessage.IsBroadcaster || (cmd.ChatMessage.IsModerator && !IsExcludedMod(cmd.ChatMessage.Username)))
                     PlayMessage(cmd.ArgumentsAsString);
 
                 // Si el TTS está desactivado aquí no hago nada más
-                if (!Configuration.TextToSpeechEnabled)
+                else if (!Configuration.TextToSpeechEnabled)
                     return;
 
                 // Si llego aquí, el TTS está activado pero está puesto el slowmode
-                PlayIfUserIsAllowed(cmd);
-                
+                else
+                    PlayIfUserIsAllowed(cmd);
             }
             catch (Exception ex)
             {
