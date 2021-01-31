@@ -31,11 +31,11 @@ namespace LaCaliforniaBot.Commands.Items
 
                 // Si el TTS está activado y no hay slowmode, se lee el mensaje
                 if (Configuration.TextToSpeechEnabled && Configuration.TextToSpeechDelay <= 0)
-                    PlayMessage(cmd.ArgumentsAsString);
+                    PlayMessage(cmd.ChatMessage.Username, cmd.ArgumentsAsString);
 
                 // Si el TTS está desactivado o hay delay, me lo salto para el streamer o los mods no excluidos
                 else if (cmd.ChatMessage.IsBroadcaster || (cmd.ChatMessage.IsModerator && !IsExcludedMod(cmd.ChatMessage.Username)))
-                    PlayMessage(cmd.ArgumentsAsString);
+                    PlayMessage(cmd.ChatMessage.Username, cmd.ArgumentsAsString);
 
                 // Si el TTS está desactivado aquí no hago nada más
                 else if (!Configuration.TextToSpeechEnabled)
@@ -62,9 +62,9 @@ namespace LaCaliforniaBot.Commands.Items
 
         #region Private Methods
 
-        private void PlayMessage(string message)
+        private void PlayMessage(string username, string message)
         {
-            TwitchBot.Instance.LogMessage(message);
+            TwitchBot.Instance.LogMessage($"[{username}] {message}");
             TextToSpeechCloud.Instance.PlayAudio(message);
         }
 
@@ -85,13 +85,13 @@ namespace LaCaliforniaBot.Commands.Items
                 if ((DateTime.UtcNow - lastMessage).TotalSeconds >= Configuration.TextToSpeechDelay)
                 {
                     usersDictionary[username] = DateTime.UtcNow;
-                    PlayMessage(cmd.ArgumentsAsString);
+                    PlayMessage(cmd.ChatMessage.Username, cmd.ArgumentsAsString);
                 }
             }
             else
             {
                 usersDictionary.Add(username, DateTime.UtcNow);
-                PlayMessage(cmd.ArgumentsAsString);
+                PlayMessage(cmd.ChatMessage.Username, cmd.ArgumentsAsString);
             }
         }
 
