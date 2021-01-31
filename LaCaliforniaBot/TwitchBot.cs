@@ -1,4 +1,4 @@
-﻿using Google.Cloud.TextToSpeech.V1;
+﻿using LaCaliforniaBot.Commands;
 using System;
 using TwitchLib.Client;
 using TwitchLib.Client.Events;
@@ -29,9 +29,12 @@ namespace LaCaliforniaBot
 
             WebSocketClient customClient = new WebSocketClient(clientOptions);
             Client = new TwitchClient(customClient);
-            Client.Initialize(credentials, Configuration.BasicConfiguration.Channel);
+            Client.Initialize(credentials, 
+                channel: Configuration.BasicConfiguration.Channel, 
+                chatCommandIdentifier: Configuration.BasicConfiguration.Prefix);
 
             Client.OnConnected += Client_OnConnected;
+            Client.OnChatCommandReceived += Client_OnChatCommandReceived;
         }
 
         #region Public Methods
@@ -92,6 +95,11 @@ namespace LaCaliforniaBot
         private void Client_OnConnected(object sender, OnConnectedArgs e)
         {
             LogMessage($"Conectado a #{e.AutoJoinChannel}");
+        }
+
+        private void Client_OnChatCommandReceived(object sender, OnChatCommandReceivedArgs e)
+        {
+            CommandService.Instance.ParseCommand(e.Command);
         }
 
         #endregion

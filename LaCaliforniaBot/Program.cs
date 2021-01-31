@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Reflection;
+using LaCaliforniaBot.Commands;
 using LaCaliforniaBot.Model;
 using Newtonsoft.Json;
 
