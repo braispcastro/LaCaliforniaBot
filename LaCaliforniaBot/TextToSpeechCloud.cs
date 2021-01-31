@@ -1,6 +1,8 @@
 ﻿using Google.Cloud.TextToSpeech.V1;
 using System;
 using System.IO;
+using System.Media;
+using System.Threading;
 
 namespace LaCaliforniaBot
 {
@@ -22,7 +24,21 @@ namespace LaCaliforniaBot
 
         #region Public Methods
 
-        public Stream GetAudioStream(string message)
+        public void PlayAudio(string message)
+        {
+            using (Stream output = GetAudioStream(message))
+            {
+                SoundPlayer soundPlayer = new SoundPlayer(output);
+                soundPlayer.PlaySync();
+                Thread.Sleep(500);
+            }
+        }
+
+        #endregion
+
+        #region Private Methods
+
+        private Stream GetAudioStream(string message)
         {
             SynthesisInput input = new SynthesisInput
             {
@@ -37,7 +53,8 @@ namespace LaCaliforniaBot
 
             AudioConfig audioConfig = new AudioConfig
             {
-                AudioEncoding = AudioEncoding.Linear16
+                AudioEncoding = AudioEncoding.Linear16,
+                SpeakingRate = Configuration.BasicConfiguration.MessageSpeed
             };
 
             try

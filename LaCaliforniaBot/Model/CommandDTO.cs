@@ -10,7 +10,7 @@ namespace LaCaliforniaBot.Model
         public string Description { get; }
         public ChatUserType Allow { get; }
         public MethodInfo MethodInfo { get; }
-        public object? Instance { get; }
+        public object Instance { get; }
 
         public CommandDTO(string alias, string name, string description, ChatUserType allow, MethodInfo methodInfo, object instance)
         {

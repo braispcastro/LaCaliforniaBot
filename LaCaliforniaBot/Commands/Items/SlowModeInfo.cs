@@ -3,15 +3,15 @@ using LaCaliforniaBot.Enums;
 
 namespace LaCaliforniaBot.Commands.Items
 {
-    public class Settings : BaseItem
+    public class SlowModeInfo : BaseItem
     {
-        private static Settings instance;
-        public static Settings Instance
+        private static SlowModeInfo instance;
+        public static SlowModeInfo Instance
         {
-            get { return instance ?? (instance = new Settings()); }
+            get { return instance ?? (instance = new SlowModeInfo()); }
         }
 
-        [Command("tts", ChatUserType.Broadcaster | ChatUserType.Moderator)]
+        [Command("slowinfo", ChatUserType.Pleb)]
         public void ToggleTextToSpeech(object[] args)
         {
             var chatMessage = ParseArgument(args);
