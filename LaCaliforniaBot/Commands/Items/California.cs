@@ -22,7 +22,7 @@ namespace LaCaliforniaBot.Commands.Items
             usersDictionary = new Dictionary<string, DateTime>();
         }
 
-        [Command("k", ChatUserType.Broadcaster | ChatUserType.Moderator | ChatUserType.Subscriber | ChatUserType.Vip)]
+        [Command("k", ChatUserType.Broadcaster | ChatUserType.Moderator | ChatUserType.Subscriber | ChatUserType.Vip, name: "California")]
         public void ParseMessageToPlay(object[] args)
         {
             try
@@ -35,6 +35,10 @@ namespace LaCaliforniaBot.Commands.Items
 
                 // Si el TTS está desactivado o hay delay, me lo salto para el streamer o los mods no excluidos
                 else if (cmd.ChatMessage.IsBroadcaster || (cmd.ChatMessage.IsModerator && !IsExcludedMod(cmd.ChatMessage.Username)))
+                    PlayMessage(cmd.ChatMessage.Username, cmd.ArgumentsAsString);
+
+                // Si es un usuario con permiso específico, se lee el mensaje
+                else if (TwitchBot.Instance.IsPlebAllowedToTalk(cmd.ChatMessage.Username))
                     PlayMessage(cmd.ChatMessage.Username, cmd.ArgumentsAsString);
 
                 // Si el TTS está desactivado aquí no hago nada más
@@ -64,7 +68,7 @@ namespace LaCaliforniaBot.Commands.Items
 
         private void PlayMessage(string username, string message)
         {
-            TwitchBot.Instance.LogMessage($"[{username}] {message}");
+            //TwitchBot.Instance.LogMessage($"[{username}] {message}");
             TextToSpeechCloud.Instance.PlayAudio(message);
         }
 

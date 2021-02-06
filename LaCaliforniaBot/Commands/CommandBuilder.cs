@@ -32,8 +32,8 @@ namespace LaCaliforniaBot.Commands
                 var constructorArgs = method.CustomAttributes.Single(x => x.AttributeType == typeof(CommandAttribute)).ConstructorArguments;
                 var alias = constructorArgs[0].Value?.ToString();
                 var allow = (ChatUserType)constructorArgs[1].Value;
-                var desc = constructorArgs[2].Value?.ToString();
-                var name = constructorArgs[3].Value?.ToString();
+                var name = constructorArgs[2].Value?.ToString();
+                var desc = constructorArgs[3].Value?.ToString();
                 var inst = method.ReflectedType.GetProperty("Instance", BindingFlags.Static | BindingFlags.Public).GetValue(typeof(void), null);
                 yield return new CommandDTO(alias, name, desc, allow, method, inst);
             }
