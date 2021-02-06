@@ -4,16 +4,16 @@ using LaCaliforniaBot.Enums;
 
 namespace LaCaliforniaBot.Commands.Items
 {
-    public class Settings : BaseItem
+    public class ToggleTextToSpeech : BaseItem
     {
-        private static Settings instance;
-        public static Settings Instance
+        private static ToggleTextToSpeech instance;
+        public static ToggleTextToSpeech Instance
         {
-            get { return instance ?? (instance = new Settings()); }
+            get { return instance ?? (instance = new ToggleTextToSpeech()); }
         }
 
         [Command("tts", ChatUserType.Broadcaster | ChatUserType.Moderator)]
-        public void ToggleTextToSpeech(object[] args)
+        public void Toggle(object[] args)
         {
             try
             {
@@ -55,6 +55,7 @@ namespace LaCaliforniaBot.Commands.Items
         private void DisableTextToSpeech(string username)
         {
             Configuration.TextToSpeechEnabled = false;
+            California.Instance.ClearUserList(); // Se resetea la lista de slowmode para liberar memoria
             TwitchBot.Instance.LogMessage($"*** TTS desactivado por {username} ***");
         }
 

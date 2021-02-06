@@ -7,6 +7,8 @@ using TwitchLib.Communication.Clients;
 using TwitchLib.Communication.Models;
 using LaCaliforniaBot.Commands;
 using LaCaliforniaBot.Enums;
+using System.Collections.Generic;
+using LaCaliforniaBot.Model;
 
 namespace LaCaliforniaBot
 {
@@ -18,10 +20,18 @@ namespace LaCaliforniaBot
             get { return instance ?? (instance = new TwitchBot()); }
         }
 
+        private readonly List<AllowedUserDTO> allowedUsersToTalk;
+        public List<AllowedUserDTO> AllowedUsersToTalk
+        {
+            get { return allowedUsersToTalk; }
+        }
+
         public TwitchClient Client { get; }
 
         public TwitchBot()
         {
+            allowedUsersToTalk = new List<AllowedUserDTO>();
+
             ConnectionCredentials credentials = new ConnectionCredentials(Configuration.BasicConfiguration.BotUsername, Configuration.BasicConfiguration.BotPassword);
             var clientOptions = new ClientOptions
             {
@@ -90,6 +100,23 @@ namespace LaCaliforniaBot
             }
         }
 
+        public bool IsPlebAllowedToTalk(string username)
+        {
+            var allowedUser = allowedUsersToTalk.FirstOrDefault(x => x.Username == username.ToLowerInvariant());
+            if (allowedUser == null)
+                return false;
+
+            if ((DateTime.UtcNow - allowedUser.AllowedAt).TotalMinutes < allowedUser.MinutesAllowed)
+            {
+                return true;
+            }
+            else
+            {
+                allowedUsersToTalk.RemoveAll(x => x.Username == username.ToLowerInvariant());
+                return false;
+            }
+        }
+
         #endregion
 
         #region EventHandlers
@@ -106,7 +133,7 @@ namespace LaCaliforniaBot
             if (command == null)
                 return;
 
-            if (!CheckUserFlags(command.Allow, e.Command.ChatMessage))
+            if (!CanUseCommand(command.Name, command.Allow, e.Command.ChatMessage))
                 return;
 
             object[] args = new object[] { new object[] { e.Command } };
@@ -117,7 +144,7 @@ namespace LaCaliforniaBot
 
         #region Private Methods
 
-        private bool CheckUserFlags(ChatUserType allow, ChatMessage chatMessage)
+        private bool CanUseCommand(string name, ChatUserType allow, ChatMessage chatMessage)
         {
             if (allow.HasFlag(ChatUserType.Pleb))
                 return true;
@@ -134,7 +161,21 @@ namespace LaCaliforniaBot
             if (chatMessage.IsBroadcaster && allow.HasFlag(ChatUserType.Broadcaster))
                 return true;
 
-            return false;
+            return CheckCustomPermits(name, chatMessage);
+        }
+
+        private bool CheckCustomPermits(string name, ChatMessage chatMessage)
+        {
+            if (string.IsNullOrEmpty(name))
+                return false;
+
+            switch (name)
+            {
+                case "California":
+                    return IsPlebAllowedToTalk(chatMessage.Username);
+                default:
+                    return false;
+            }
         }
 
         #endregion
