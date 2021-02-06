@@ -123,7 +123,7 @@ namespace LaCaliforniaBot
 
         private void Client_OnConnected(object sender, OnConnectedArgs e)
         {
-            LogMessage($"Conectado a #{e.AutoJoinChannel}");
+            LogMessage($"Conectado a #{Configuration.BasicConfiguration.Channel}");
         }
 
         private void Client_OnChatCommandReceived(object sender, OnChatCommandReceivedArgs e)
