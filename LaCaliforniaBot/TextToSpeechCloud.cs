@@ -1,4 +1,5 @@
-﻿using Google.Cloud.TextToSpeech.V1;
+﻿using Google.Cloud.Logging.Type;
+using Google.Cloud.TextToSpeech.V1;
 using System;
 using System.IO;
 using System.Media;
@@ -64,7 +65,7 @@ namespace LaCaliforniaBot
             }
             catch (Exception ex)
             {
-                TwitchBot.Instance.LogMessage(ex.Message);
+                TwitchBot.Instance.LogMessage(LogSeverity.Error, ex.Message, ex.StackTrace);
                 return null;
             }
         }

@@ -9,6 +9,7 @@ using LaCaliforniaBot.Commands;
 using LaCaliforniaBot.Enums;
 using System.Collections.Generic;
 using LaCaliforniaBot.Model;
+using Google.Cloud.Logging.Type;
 
 namespace LaCaliforniaBot
 {
@@ -76,15 +77,19 @@ namespace LaCaliforniaBot
             }
         }
 
-        public void LogMessage(string message)
+        public void LogMessage(LogSeverity logSeverity, string message, string description = null)
         {
             try
             {
                 Console.WriteLine($"[{DateTime.Now}] {message}");
+                if (logSeverity != LogSeverity.Default && logSeverity != LogSeverity.Debug)
+                {
+                    LoggingCloud.Instance.WriteLog(logSeverity, message, description);
+                }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // Leave empty
+                LoggingCloud.Instance.WriteLog(LogSeverity.Error, ex.Message, ex.StackTrace);
             }
         }
 
@@ -96,7 +101,7 @@ namespace LaCaliforniaBot
             }
             catch (Exception ex)
             {
-                LogMessage(ex.Message);
+                LogMessage(LogSeverity.Error, ex.Message, ex.StackTrace);
             }
         }
 
@@ -123,7 +128,7 @@ namespace LaCaliforniaBot
 
         private void Client_OnConnected(object sender, OnConnectedArgs e)
         {
-            LogMessage($"Conectado a #{Configuration.BasicConfiguration.Channel}");
+            LogMessage(LogSeverity.Notice, $"Conectado a #{Configuration.BasicConfiguration.Channel}");
         }
 
         private void Client_OnChatCommandReceived(object sender, OnChatCommandReceivedArgs e)

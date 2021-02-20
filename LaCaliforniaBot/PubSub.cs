@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Google.Cloud.Logging.Type;
+using System;
 using TwitchLib.PubSub;
 using TwitchLib.PubSub.Events;
 
@@ -47,7 +48,7 @@ namespace LaCaliforniaBot
 
         private void Client_OnPubSubServiceConnected(object sender, EventArgs e)
         {
-            TwitchBot.Instance.LogMessage($"Servicio conectado - PubSub");
+            TwitchBot.Instance.LogMessage(LogSeverity.Notice, $"Servicio conectado - PubSub");
         }
 
         #endregion
