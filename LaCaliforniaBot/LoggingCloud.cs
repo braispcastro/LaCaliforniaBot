@@ -45,6 +45,7 @@ namespace LaCaliforniaBot
 
                 IDictionary<string, string> entryLabels = new Dictionary<string, string>
                 {
+                    { "Version", Configuration.AppVersion },
                     { "Environment", Configuration.Environment.ToString() },
                     { "Channel", Configuration.BasicConfiguration.Channel },
                     { "Prefix", Configuration.BasicConfiguration.Prefix.ToString() },

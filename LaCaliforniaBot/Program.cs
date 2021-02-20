@@ -1,7 +1,5 @@
 ﻿using System;
 using System.IO;
-using System.Reflection;
-using LaCaliforniaBot.Commands;
 using LaCaliforniaBot.Model;
 using Newtonsoft.Json;
 
@@ -9,7 +7,7 @@ namespace LaCaliforniaBot
 {
     internal class Program
     {
-        static void Main(string[] args)
+        static void Main()
         {
             // Configuration
             var json = File.ReadAllText("files/config.json");
@@ -18,15 +16,10 @@ namespace LaCaliforniaBot
             Configuration.TextToSpeechDelay = 0;
 
             // Windows title
-            Console.Title = $"#{Configuration.BasicConfiguration.Channel} | LaCaliforniaBot " +
-                $"v{Assembly.GetExecutingAssembly().GetName().Version.Major}" +
-                $".{Assembly.GetExecutingAssembly().GetName().Version.Minor}";
+            Console.Title = $"#{Configuration.BasicConfiguration.Channel} | LaCaliforniaBot v{Configuration.AppVersion}";
 
             // Connect twitch bot
             TwitchBot.Instance.Connect();
-
-            // Connect twitch pubsub
-            //PubSub.Instance.Connect();
 
             // Hold till exit
             string param = string.Empty;

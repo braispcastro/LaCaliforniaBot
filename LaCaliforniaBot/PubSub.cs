@@ -1,7 +1,6 @@
 ﻿using Google.Cloud.Logging.Type;
 using System;
 using TwitchLib.PubSub;
-using TwitchLib.PubSub.Events;
 
 namespace LaCaliforniaBot
 {

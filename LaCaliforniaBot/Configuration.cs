@@ -1,5 +1,6 @@
 ﻿using LaCaliforniaBot.Enums;
 using LaCaliforniaBot.Model;
+using System.Reflection;
 
 namespace LaCaliforniaBot
 {
@@ -10,6 +11,11 @@ namespace LaCaliforniaBot
         public static bool TextToSpeechEnabled { get; set; }
 
         public static int TextToSpeechDelay { get; set; }
+
+        public static string AppVersion
+        {
+            get { return $"{Assembly.GetExecutingAssembly().GetName().Version.Major}.{Assembly.GetExecutingAssembly().GetName().Version.Minor}"; }
+        }
 
         public static EnvironmentType Environment
         {
