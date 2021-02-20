@@ -25,7 +25,7 @@ namespace LaCaliforniaBot
             var loggingCredentials = File.ReadAllText("files/credentials.json");
             client = new LoggingServiceV2ClientBuilder { JsonCredentials = loggingCredentials }.Build();
 
-            logName = new LogName("lacaliforniabot", Configuration.BasicConfiguration.Channel);
+            logName = new LogName("lacaliforniabot", Configuration.BasicConfiguration.Channel.ToLowerInvariant());
             monitoredResource = new MonitoredResource { Type = "global" };
         }
 
@@ -60,6 +60,10 @@ namespace LaCaliforniaBot
                 // Leave empty
             }
         }
+
+        #endregion
+
+        #region Private Methods
 
         private Struct GetJsonPayload(string message, string description)
         {
