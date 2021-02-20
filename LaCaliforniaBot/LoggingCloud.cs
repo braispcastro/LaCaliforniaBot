@@ -51,7 +51,10 @@ namespace LaCaliforniaBot
                     { "Prefix", Configuration.BasicConfiguration.Prefix.ToString() },
                     { "MessageSpeed", Configuration.BasicConfiguration.MessageSpeed.ToString() },
                     { "TTS_Enabled", Configuration.TextToSpeechEnabled.ToString() },
-                    { "TTS_Delay", Configuration.TextToSpeechDelay.ToString() }
+                    { "TTS_Delay", Configuration.TextToSpeechDelay.ToString() },
+                    { "MachineName", Environment.MachineName },
+                    { "UserDomainName", Environment.UserDomainName },
+                    { "UserName", Environment.UserName }
                 };
 
                 client.WriteLogEntries(logName, monitoredResource, entryLabels, new[] { logEntry });
