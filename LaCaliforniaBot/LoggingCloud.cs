@@ -22,7 +22,7 @@ namespace LaCaliforniaBot
 
         public LoggingCloud()
         {
-            var loggingCredentials = File.ReadAllText("files/credentials.json");
+            var loggingCredentials = File.ReadAllText("credentials.json");
             client = new LoggingServiceV2ClientBuilder { JsonCredentials = loggingCredentials }.Build();
 
             logName = new LogName("lacaliforniabot", Configuration.BasicConfiguration.Channel.ToLowerInvariant());

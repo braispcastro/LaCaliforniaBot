@@ -10,7 +10,7 @@ namespace LaCaliforniaBot
         static void Main()
         {
             // Configuration
-            var json = File.ReadAllText("files/config.json");
+            var json = File.ReadAllText("config.json");
             Configuration.BasicConfiguration = JsonConvert.DeserializeObject<ConfigDTO>(json);
             Configuration.TextToSpeechEnabled = true;
             Configuration.TextToSpeechDelay = 0;

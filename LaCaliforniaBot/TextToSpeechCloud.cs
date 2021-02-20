@@ -19,7 +19,7 @@ namespace LaCaliforniaBot
 
         public TextToSpeechCloud()
         {
-            var ttsCredentials = File.ReadAllText("files/credentials.json");
+            var ttsCredentials = File.ReadAllText("credentials.json");
             Client = new TextToSpeechClientBuilder { JsonCredentials = ttsCredentials }.Build();
         }
 
