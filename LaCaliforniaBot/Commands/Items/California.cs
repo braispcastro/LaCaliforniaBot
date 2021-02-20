@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Google.Cloud.Logging.Type;
 using LaCaliforniaBot.Commands.Attributes;
 using LaCaliforniaBot.Enums;
 using TwitchLib.Client.Models;
@@ -51,7 +52,7 @@ namespace LaCaliforniaBot.Commands.Items
             }
             catch (Exception ex)
             {
-                TwitchBot.Instance.LogMessage(ex.Message);
+                TwitchBot.Instance.LogMessage(LogSeverity.Error, ex.Message, ex.StackTrace);
             }
         }
 
@@ -68,7 +69,6 @@ namespace LaCaliforniaBot.Commands.Items
 
         private void PlayMessage(string username, string message)
         {
-            //TwitchBot.Instance.LogMessage($"[{username}] {message}");
             TextToSpeechCloud.Instance.PlayAudio(message);
         }
 

@@ -25,6 +25,9 @@ namespace LaCaliforniaBot
             // Connect twitch bot
             TwitchBot.Instance.Connect();
 
+            // Connect twitch pubsub
+            //PubSub.Instance.Connect();
+
             // Hold till exit
             string param = string.Empty;
             while (param.ToLowerInvariant() != "exit")

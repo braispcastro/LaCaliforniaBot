@@ -1,4 +1,5 @@
 ﻿using System;
+using Google.Cloud.Logging.Type;
 using LaCaliforniaBot.Commands.Attributes;
 using LaCaliforniaBot.Enums;
 
@@ -34,7 +35,7 @@ namespace LaCaliforniaBot.Commands.Items
             }
             catch (Exception ex)
             {
-                TwitchBot.Instance.LogMessage(ex.Message);
+                TwitchBot.Instance.LogMessage(LogSeverity.Error, ex.Message, ex.StackTrace);
             }
         }
 
@@ -43,20 +44,20 @@ namespace LaCaliforniaBot.Commands.Items
         private void ChangeTextToSpeechDelay(string username, int delay)
         {
             Configuration.TextToSpeechDelay = delay;
-            TwitchBot.Instance.LogMessage($"*** Slow mode de {delay} segundos establecido por {username} ***");
+            TwitchBot.Instance.LogMessage(LogSeverity.Info, $"Slow mode de {delay} segundos establecido por {username}");
         }
 
         private void EnableTextToSpeech(string username)
         {
             Configuration.TextToSpeechEnabled = true;
-            TwitchBot.Instance.LogMessage($"*** TTS activado por {username} ***");
+            TwitchBot.Instance.LogMessage(LogSeverity.Info, $"TTS activado por {username}");
         }
 
         private void DisableTextToSpeech(string username)
         {
             Configuration.TextToSpeechEnabled = false;
             California.Instance.ClearUserList(); // Se resetea la lista de slowmode para liberar memoria
-            TwitchBot.Instance.LogMessage($"*** TTS desactivado por {username} ***");
+            TwitchBot.Instance.LogMessage(LogSeverity.Info, $"TTS desactivado por {username}");
         }
 
         #endregion

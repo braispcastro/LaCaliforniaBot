@@ -1,4 +1,5 @@
 ﻿using System;
+using Google.Cloud.Logging.Type;
 using LaCaliforniaBot.Commands.Attributes;
 using LaCaliforniaBot.Enums;
 using LaCaliforniaBot.Model;
@@ -33,11 +34,11 @@ namespace LaCaliforniaBot.Commands.Items
                     AllowedAt = DateTime.UtcNow
                 });
 
-                TwitchBot.Instance.LogMessage($"*** Permitido el TTS a {customArgs.Username} durante {customArgs.MinutesAllowed} minuto(s) por {parsedArgs.ChatMessage.Username} ***");
+                TwitchBot.Instance.LogMessage(LogSeverity.Info, $"Permitido el TTS a {customArgs.Username} durante {customArgs.MinutesAllowed} minuto(s) por {parsedArgs.ChatMessage.Username}");
             }
             catch (Exception ex)
             {
-                TwitchBot.Instance.LogMessage(ex.Message);
+                TwitchBot.Instance.LogMessage(LogSeverity.Error, ex.Message, ex.StackTrace);
             }
         }
 
@@ -54,12 +55,12 @@ namespace LaCaliforniaBot.Commands.Items
 
                 if (TwitchBot.Instance.AllowedUsersToTalk.RemoveAll(x => x.Username == username) > 0)
                 {
-                    TwitchBot.Instance.LogMessage($"*** Denegado el TTS a {username} por {parsedArgs.ChatMessage.Username} ***");
+                    TwitchBot.Instance.LogMessage(LogSeverity.Info, $"Denegado el TTS a {username} por {parsedArgs.ChatMessage.Username}");
                 }
             }
             catch (Exception ex)
             {
-                TwitchBot.Instance.LogMessage(ex.Message);
+                TwitchBot.Instance.LogMessage(LogSeverity.Error, ex.Message, ex.StackTrace);
             }
         }
 

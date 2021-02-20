@@ -1,4 +1,5 @@
 ﻿using System;
+using Google.Cloud.Logging.Type;
 using LaCaliforniaBot.Commands.Attributes;
 using LaCaliforniaBot.Enums;
 
@@ -35,7 +36,7 @@ namespace LaCaliforniaBot.Commands.Items
             }
             catch (Exception ex)
             {
-                TwitchBot.Instance.LogMessage(ex.Message);
+                TwitchBot.Instance.LogMessage(LogSeverity.Error, ex.Message, ex.StackTrace);
             }
         }
 
