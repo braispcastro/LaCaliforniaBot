@@ -22,7 +22,7 @@ namespace LaCaliforniaBot
 
         public LoggingCloud()
         {
-            var loggingCredentials = File.ReadAllText("files/credentials.json");
+            var loggingCredentials = File.ReadAllText("credentials.json");
             client = new LoggingServiceV2ClientBuilder { JsonCredentials = loggingCredentials }.Build();
 
             logName = new LogName("lacaliforniabot", Configuration.BasicConfiguration.Channel.ToLowerInvariant());
@@ -45,12 +45,16 @@ namespace LaCaliforniaBot
 
                 IDictionary<string, string> entryLabels = new Dictionary<string, string>
                 {
+                    { "Version", Configuration.AppVersion },
                     { "Environment", Configuration.Environment.ToString() },
                     { "Channel", Configuration.BasicConfiguration.Channel },
                     { "Prefix", Configuration.BasicConfiguration.Prefix.ToString() },
                     { "MessageSpeed", Configuration.BasicConfiguration.MessageSpeed.ToString() },
                     { "TTS_Enabled", Configuration.TextToSpeechEnabled.ToString() },
-                    { "TTS_Delay", Configuration.TextToSpeechDelay.ToString() }
+                    { "TTS_Delay", Configuration.TextToSpeechDelay.ToString() },
+                    { "MachineName", Environment.MachineName },
+                    { "UserDomainName", Environment.UserDomainName },
+                    { "UserName", Environment.UserName }
                 };
 
                 client.WriteLogEntries(logName, monitoredResource, entryLabels, new[] { logEntry });

@@ -26,4 +26,12 @@
     </None>
   </ItemGroup>
 
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="xcopy &quot;$(OutDir)Files\config.json&quot; &quot;$(OutDir)&quot;&#xD;&#xA;xcopy &quot;$(OutDir)Files\credentials.json&quot; &quot;$(OutDir)&quot;" />
+  </Target>
+
+  <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
+    <Exec Command="del &quot;$(OutDir)config.json&quot;&#xD;&#xA;del &quot;$(OutDir)credentials.json&quot;" />
+  </Target>
+
 </Project>

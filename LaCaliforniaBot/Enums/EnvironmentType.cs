@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace LaCaliforniaBot.Enums
+﻿namespace LaCaliforniaBot.Enums
 {
     public enum EnvironmentType
     {
