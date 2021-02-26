@@ -28,8 +28,8 @@ namespace LaCaliforniaBot
 
         public void PlayAudio(string message)
         {
-            var messageFiltered = FilterMessage(message);
-            using (Stream output = GetAudioStream(messageFiltered))
+            var filteredMsg = FilterMessage(message);
+            using (Stream output = GetAudioStream(filteredMsg))
             {
                 SoundPlayer soundPlayer = new SoundPlayer(output);
                 soundPlayer.PlaySync();
