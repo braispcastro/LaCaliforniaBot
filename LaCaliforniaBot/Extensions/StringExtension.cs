@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Text.RegularExpressions;
+using System.Text;
 
 namespace LaCaliforniaBot.Extensions
 {
@@ -26,12 +26,22 @@ namespace LaCaliforniaBot.Extensions
             return result.Trim();
         }
 
-        public static string RemoveLinks(this string str)
+        public static string RemoveEmojis(this string str)
         {
             if (string.IsNullOrEmpty(str))
                 return str;
 
-            return Regex.Replace(str.ToLowerInvariant(), @"(http[^\s]+)|(www\.[^\s]+)", "");
+            foreach (var a in str)
+            {
+                byte[] bts = Encoding.UTF32.GetBytes(a.ToString());
+
+                if (bts[0].ToString() == "253" && bts[1].ToString() == "255")
+                {
+                    str = str.Replace(a.ToString(), "");
+                }
+
+            }
+            return str;
         }
     }
 }

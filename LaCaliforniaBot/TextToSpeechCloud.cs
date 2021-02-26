@@ -1,5 +1,6 @@
 ﻿using Google.Cloud.Logging.Type;
 using Google.Cloud.TextToSpeech.V1;
+using LaCaliforniaBot.Extensions;
 using System;
 using System.IO;
 using System.Media;
@@ -27,7 +28,8 @@ namespace LaCaliforniaBot
 
         public void PlayAudio(string message)
         {
-            using (Stream output = GetAudioStream(message))
+            var messageFiltered = FilterMessage(message);
+            using (Stream output = GetAudioStream(messageFiltered))
             {
                 SoundPlayer soundPlayer = new SoundPlayer(output);
                 soundPlayer.PlaySync();
@@ -68,6 +70,13 @@ namespace LaCaliforniaBot
                 TwitchBot.Instance.LogMessage(LogSeverity.Error, ex.Message, ex.StackTrace);
                 return null;
             }
+        }
+
+        private string FilterMessage(string msg)
+        {
+            return msg
+                .RemoveEmojis()
+                .LimitWords(Configuration.TextToSpeechMaxCharacters);
         }
 
         #endregion
