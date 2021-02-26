@@ -14,6 +14,7 @@ namespace LaCaliforniaBot
             Configuration.BasicConfiguration = JsonConvert.DeserializeObject<ConfigDTO>(json);
             Configuration.TextToSpeechEnabled = true;
             Configuration.TextToSpeechDelay = 0;
+            Configuration.TextToSpeechMaxCharacters = 100;
 
             // Windows title
             Console.Title = $"#{Configuration.BasicConfiguration.Channel} | LaCaliforniaBot v{Configuration.AppVersion}";

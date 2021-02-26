@@ -4,6 +4,7 @@ using System.Linq;
 using Google.Cloud.Logging.Type;
 using LaCaliforniaBot.Commands.Attributes;
 using LaCaliforniaBot.Enums;
+using LaCaliforniaBot.Extensions;
 using TwitchLib.Client.Models;
 
 namespace LaCaliforniaBot.Commands.Items
@@ -69,7 +70,7 @@ namespace LaCaliforniaBot.Commands.Items
 
         private void PlayMessage(string username, string message)
         {
-            TextToSpeechCloud.Instance.PlayAudio(message);
+            TextToSpeechCloud.Instance.PlayAudio(message.LimitWords(Configuration.TextToSpeechMaxCharacters));
         }
 
         private bool IsExcludedMod(string username)
