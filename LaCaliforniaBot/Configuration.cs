@@ -6,7 +6,7 @@ namespace LaCaliforniaBot
 {
     public class Configuration
     {
-        public static ConfigDTO BasicConfiguration { get; set; }
+        public static Config BasicConfiguration { get; set; }
 
         public static bool TextToSpeechEnabled { get; set; }
 

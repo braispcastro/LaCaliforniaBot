@@ -27,14 +27,14 @@ namespace LaCaliforniaBot.Commands.Items
                     return;
 
                 TwitchBot.Instance.AllowedUsersToTalk.RemoveAll(x => x.Username == customArgs.Username);
-                TwitchBot.Instance.AllowedUsersToTalk.Add(new AllowedUserDTO
+                TwitchBot.Instance.AllowedUsersToTalk.Add(new AllowedUser
                 {
                     Username = customArgs.Username,
                     MinutesAllowed = customArgs.MinutesAllowed,
                     AllowedAt = DateTime.UtcNow
                 });
 
-                TwitchBot.Instance.LogMessage(LogSeverity.Info, $"Permitido el TTS a {customArgs.Username} durante {customArgs.MinutesAllowed} minuto(s) por {parsedArgs.ChatMessage.Username}");
+                TwitchBot.Instance.LogMessage(LogSeverity.Notice, $"Permitido el TTS a {customArgs.Username} durante {customArgs.MinutesAllowed} minuto(s) por {parsedArgs.ChatMessage.Username}");
             }
             catch (Exception ex)
             {
@@ -55,7 +55,7 @@ namespace LaCaliforniaBot.Commands.Items
 
                 if (TwitchBot.Instance.AllowedUsersToTalk.RemoveAll(x => x.Username == username) > 0)
                 {
-                    TwitchBot.Instance.LogMessage(LogSeverity.Info, $"Denegado el TTS a {username} por {parsedArgs.ChatMessage.Username}");
+                    TwitchBot.Instance.LogMessage(LogSeverity.Notice, $"Denegado el TTS a {username} por {parsedArgs.ChatMessage.Username}");
                 }
             }
             catch (Exception ex)

@@ -39,7 +39,7 @@ namespace LaCaliforniaBot.Commands.Items
         private void UpdateMaxCharacters(string username, int maxCharacters)
         {
             Configuration.TextToSpeechMaxCharacters = maxCharacters;
-            TwitchBot.Instance.LogMessage(LogSeverity.Info, $"Se han establecido {maxCharacters} caracteres máximos por {username}");
+            TwitchBot.Instance.LogMessage(LogSeverity.Notice, $"Se han establecido {maxCharacters} caracteres máximos por {username}");
         }
 
         #endregion

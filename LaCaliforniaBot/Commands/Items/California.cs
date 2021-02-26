@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using Google.Cloud.Logging.Type;
 using LaCaliforniaBot.Commands.Attributes;
 using LaCaliforniaBot.Enums;
@@ -30,6 +31,12 @@ namespace LaCaliforniaBot.Commands.Items
             try
             {
                 var cmd = ParseArgument(args);
+
+                if (ShouldIgnoreMessage(cmd.ArgumentsAsString))
+                {
+                    TwitchBot.Instance.LogMessage(LogSeverity.Info, "Se ha ignorado un mensaje por contener una URL", cmd.ArgumentsAsString);
+                    return;
+                }
 
                 // Si el TTS está activado y no hay slowmode, se lee el mensaje
                 if (Configuration.TextToSpeechEnabled && Configuration.TextToSpeechDelay <= 0)
@@ -70,7 +77,7 @@ namespace LaCaliforniaBot.Commands.Items
 
         private void PlayMessage(string username, string message)
         {
-            TextToSpeechCloud.Instance.PlayAudio(message.LimitWords(Configuration.TextToSpeechMaxCharacters));
+            TextToSpeechCloud.Instance.PlayAudio(FilterMessage(message));
         }
 
         private bool IsExcludedMod(string username)
@@ -98,6 +105,17 @@ namespace LaCaliforniaBot.Commands.Items
                 usersDictionary.Add(username, DateTime.UtcNow);
                 PlayMessage(cmd.ChatMessage.Username, cmd.ArgumentsAsString);
             }
+        }
+
+        private bool ShouldIgnoreMessage(string msg)
+        {
+            // Por ahora solo se comprueba si el mensaje contiene un link
+            return Regex.IsMatch(msg.ToLowerInvariant(), @"(http[^\s]+)|(www\.[^\s]+)");
+        }
+
+        private string FilterMessage(string msg)
+        {
+            return msg.LimitWords(Configuration.TextToSpeechMaxCharacters);
         }
 
         #endregion

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text.RegularExpressions;
 
 namespace LaCaliforniaBot.Extensions
 {
@@ -23,6 +24,14 @@ namespace LaCaliforniaBot.Extensions
             }
 
             return result.Trim();
+        }
+
+        public static string RemoveLinks(this string str)
+        {
+            if (string.IsNullOrEmpty(str))
+                return str;
+
+            return Regex.Replace(str.ToLowerInvariant(), @"(http[^\s]+)|(www\.[^\s]+)", "");
         }
     }
 }
