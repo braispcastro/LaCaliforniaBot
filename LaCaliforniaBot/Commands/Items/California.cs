@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using Google.Cloud.Logging.Type;
 using LaCaliforniaBot.Commands.Attributes;
 using LaCaliforniaBot.Enums;
+using LaCaliforniaBot.Extensions;
 using TwitchLib.Client.Models;
 
 namespace LaCaliforniaBot.Commands.Items
@@ -30,25 +32,33 @@ namespace LaCaliforniaBot.Commands.Items
             {
                 var cmd = ParseArgument(args);
 
+                if (ShouldIgnoreMessage(cmd.ArgumentsAsString))
+                {
+                    TwitchBot.Instance.LogMessage(LogSeverity.Info, "Se ha ignorado un mensaje por contener una URL", cmd.ArgumentsAsString);
+                    return;
+                }
+
+                var message = FilterMessage(cmd);
+
                 // Si el TTS está activado y no hay slowmode, se lee el mensaje
                 if (Configuration.TextToSpeechEnabled && Configuration.TextToSpeechDelay <= 0)
-                    PlayMessage(cmd.ChatMessage.Username, cmd.ArgumentsAsString);
+                    PlayMessage(message);
 
                 // Si el TTS está desactivado o hay delay, me lo salto para el streamer o los mods no excluidos
                 else if (cmd.ChatMessage.IsBroadcaster || (cmd.ChatMessage.IsModerator && !IsExcludedMod(cmd.ChatMessage.Username)))
-                    PlayMessage(cmd.ChatMessage.Username, cmd.ArgumentsAsString);
+                    PlayMessage(message);
 
                 // Si es un usuario con permiso específico, se lee el mensaje
                 else if (TwitchBot.Instance.IsPlebAllowedToTalk(cmd.ChatMessage.Username))
-                    PlayMessage(cmd.ChatMessage.Username, cmd.ArgumentsAsString);
+                    PlayMessage(message);
 
                 // Si el TTS está desactivado aquí no hago nada más
                 else if (!Configuration.TextToSpeechEnabled)
                     return;
 
                 // Si llego aquí, el TTS está activado pero está puesto el slowmode
-                else
-                    PlayIfUserIsAllowed(cmd);
+                else if (IsUserIsAllowed(cmd))
+                    PlayMessage(message);
             }
             catch (Exception ex)
             {
@@ -67,7 +77,7 @@ namespace LaCaliforniaBot.Commands.Items
 
         #region Private Methods
 
-        private void PlayMessage(string username, string message)
+        private void PlayMessage(string message)
         {
             TextToSpeechCloud.Instance.PlayAudio(message);
         }
@@ -80,7 +90,7 @@ namespace LaCaliforniaBot.Commands.Items
             return Configuration.BasicConfiguration.ExcludedMods.Select(x => x.ToLowerInvariant()).Contains(username.ToLowerInvariant());
         }
 
-        private void PlayIfUserIsAllowed(ChatCommand cmd)
+        private bool IsUserIsAllowed(ChatCommand cmd)
         {
             var username = cmd.ChatMessage.Username.ToLowerInvariant();
 
@@ -89,14 +99,31 @@ namespace LaCaliforniaBot.Commands.Items
                 if ((DateTime.UtcNow - lastMessage).TotalSeconds >= Configuration.TextToSpeechDelay)
                 {
                     usersDictionary[username] = DateTime.UtcNow;
-                    PlayMessage(cmd.ChatMessage.Username, cmd.ArgumentsAsString);
+                    return true;
                 }
             }
             else
             {
                 usersDictionary.Add(username, DateTime.UtcNow);
-                PlayMessage(cmd.ChatMessage.Username, cmd.ArgumentsAsString);
+                return true;
             }
+
+            return false;
+        }
+
+        private bool ShouldIgnoreMessage(string msg)
+        {
+            // Por ahora solo se comprueba si el mensaje contiene un link
+            return Regex.IsMatch(msg.ToLowerInvariant(), @"(http[^\s]+)|(www\.[^\s]+)");
+        }
+
+        private string FilterMessage(ChatCommand cmd)
+        {
+            var result = cmd.ArgumentsAsString;
+
+            return result
+                .RemoveEmojis()
+                .LimitWords(Configuration.TextToSpeechMaxCharacters);
         }
 
         #endregion

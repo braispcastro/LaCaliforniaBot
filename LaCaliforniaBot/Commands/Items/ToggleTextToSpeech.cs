@@ -44,20 +44,20 @@ namespace LaCaliforniaBot.Commands.Items
         private void ChangeTextToSpeechDelay(string username, int delay)
         {
             Configuration.TextToSpeechDelay = delay;
-            TwitchBot.Instance.LogMessage(LogSeverity.Info, $"Slow mode de {delay} segundos establecido por {username}");
+            TwitchBot.Instance.LogMessage(LogSeverity.Notice, $"Slow mode de {delay} segundos establecido por {username}");
         }
 
         private void EnableTextToSpeech(string username)
         {
             Configuration.TextToSpeechEnabled = true;
-            TwitchBot.Instance.LogMessage(LogSeverity.Info, $"TTS activado por {username}");
+            TwitchBot.Instance.LogMessage(LogSeverity.Notice, $"TTS activado por {username}");
         }
 
         private void DisableTextToSpeech(string username)
         {
             Configuration.TextToSpeechEnabled = false;
             California.Instance.ClearUserList(); // Se resetea la lista de slowmode para liberar memoria
-            TwitchBot.Instance.LogMessage(LogSeverity.Info, $"TTS desactivado por {username}");
+            TwitchBot.Instance.LogMessage(LogSeverity.Notice, $"TTS desactivado por {username}");
         }
 
         #endregion

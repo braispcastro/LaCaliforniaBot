@@ -2,7 +2,7 @@
 
 namespace LaCaliforniaBot.Model
 {
-    public class AllowedUserDTO
+    public class AllowedUser
     {
         public string Username { get; set; }
         public int MinutesAllowed { get; set; }

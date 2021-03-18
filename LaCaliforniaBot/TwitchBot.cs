@@ -21,8 +21,8 @@ namespace LaCaliforniaBot
             get { return instance ?? (instance = new TwitchBot()); }
         }
 
-        private readonly List<AllowedUserDTO> allowedUsersToTalk;
-        public List<AllowedUserDTO> AllowedUsersToTalk
+        private readonly List<AllowedUser> allowedUsersToTalk;
+        public List<AllowedUser> AllowedUsersToTalk
         {
             get { return allowedUsersToTalk; }
         }
@@ -31,7 +31,7 @@ namespace LaCaliforniaBot
 
         public TwitchBot()
         {
-            allowedUsersToTalk = new List<AllowedUserDTO>();
+            allowedUsersToTalk = new List<AllowedUser>();
 
             ConnectionCredentials credentials = new ConnectionCredentials(Configuration.BasicConfiguration.BotUsername, Configuration.BasicConfiguration.BotPassword);
             var clientOptions = new ClientOptions

@@ -15,7 +15,7 @@ namespace LaCaliforniaBot.Commands
             get { return instance ?? (instance = new CommandBuilder()); }
         }
 
-        public List<CommandDTO> Items { get; }
+        public List<Command> Items { get; }
 
         public CommandBuilder()
         {
@@ -25,7 +25,7 @@ namespace LaCaliforniaBot.Commands
             Items = BuildCommandList(methods).ToList();
         }
 
-        private IEnumerable<CommandDTO> BuildCommandList(List<MethodInfo> methods)
+        private IEnumerable<Command> BuildCommandList(List<MethodInfo> methods)
         {
             foreach (var method in methods)
             {
@@ -35,7 +35,7 @@ namespace LaCaliforniaBot.Commands
                 var name = constructorArgs[2].Value?.ToString();
                 var desc = constructorArgs[3].Value?.ToString();
                 var inst = method.ReflectedType.GetProperty("Instance", BindingFlags.Static | BindingFlags.Public).GetValue(typeof(void), null);
-                yield return new CommandDTO(alias, name, desc, allow, method, inst);
+                yield return new Command(alias, name, desc, allow, method, inst);
             }
         }
     }
