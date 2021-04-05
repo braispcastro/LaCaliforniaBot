@@ -7,7 +7,7 @@ Uses google cloud for text to speech and logging.
 
 The bot can be used by the broadcaster, mods, subs and VIPs of the channel the bot is in. If a command says 'Mods only' it means the command can only be used by the broadcaster or mods.
 
-# Commands
+<br>
 
 ## Text to speech
 
