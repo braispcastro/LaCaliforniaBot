@@ -29,7 +29,7 @@ The bot will give information about its status if text to speech is disabled or 
 
 ## Toggle - Mods only
 
-Enables (on) and disables (off) the use of the command.
+Enables (on) and disables (off) the use of the text to speech command (!k).
 
 ```
 !tts <option>
