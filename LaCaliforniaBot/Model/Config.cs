@@ -10,6 +10,7 @@ namespace LaCaliforniaBot.Model
         public int MaxCharacters { get; set; }
         public string BotUsername { get; set; }
         public string BotPassword { get; set; }
+        public string VoiceName { get; set; }
         public List<string> ExcludedMods { get; set; }
     }
 }

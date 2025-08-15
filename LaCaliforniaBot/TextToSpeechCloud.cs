@@ -49,7 +49,7 @@ namespace LaCaliforniaBot
             VoiceSelectionParams voiceSelection = new VoiceSelectionParams
             {
                 LanguageCode = "es-ES",
-                Name = "es-ES-Standard-A"
+                Name = Configuration.BasicConfiguration.VoiceName
             };
 
             AudioConfig audioConfig = new AudioConfig
